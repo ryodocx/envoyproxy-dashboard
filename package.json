@@ -1,15 +1,12 @@
 {
-  "type": "module",
   "scripts": {
-    "serve": "web-dev-server"
+    "serve": "vite serve",
+    "build": "vite build"
   },
   "dependencies": {
     "lit": "^2.1.2"
   },
   "devDependencies": {
-    "@web/dev-server": "^0.1.29",
-    "@web/dev-server-esbuild": "^0.2.16",
-    "@web/dev-server-rollup": "^0.3.15",
-    "rollup": "^2.66.1"
+    "vite": "^2.7.13"
   }
 }
