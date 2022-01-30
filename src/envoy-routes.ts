@@ -1,9 +1,9 @@
 import { html, css, LitElement } from "lit"
 import { customElement, property } from "lit/decorators.js"
-// import "@ui5/webcomponents/dist/Table.js"
-// import "@ui5/webcomponents/dist/TableColumn.js"
-// import "@ui5/webcomponents/dist/TableRow.js"
-// import "@ui5/webcomponents/dist/TableCell.js"
+import "@ui5/webcomponents/dist/Table.js"
+import "@ui5/webcomponents/dist/TableColumn.js"
+import "@ui5/webcomponents/dist/TableRow.js"
+import "@ui5/webcomponents/dist/TableCell.js"
 
 /**
  * An example element.
@@ -13,6 +13,7 @@ import { customElement, property } from "lit/decorators.js"
  */
 @customElement("envoy-routes")
 export class EnvoyRoutes extends LitElement {
+
   static styles = css`
     :host {
       display: block;
@@ -22,56 +23,51 @@ export class EnvoyRoutes extends LitElement {
     }
   `
 
-  /**
-   * The name to say "Hello" to.
-   */
-  @property()
-  name = "World"
-
-  /**
-   * The number of times the button has been clicked.
-   */
-  @property({ type: Number })
-  count = 0
+  @property({ type: String })
+  message = ""
 
   @property({ type: Map })
   envoyData = {}
 
-  @property({ type: Number })
-  envoyDataCount = 0
-
   constructor() {
-    super();
-    this.count = 3
+    super()
 
     fetch(".vscode/envoy.json")
       .then(response => {
         import.meta.env.DEV && console.log("envoy.json response", response)
+        this.message = `fetch envoy.json -> ${response.statusText}`
         return response.json()
       })
       .then(data => {
         import.meta.env.DEV && console.log("envoy.json data", data)
+        this.envoyData = data
       })
   }
 
   render() {
-    return html`
-      <h1>Hello, ${this.name}!</h1>
-      <button @click=${this._onClick} part="button">
-        Click Count: ${this.count}
-      </button>
-      data: ${this.envoyDataCount}
-      <slot></slot>
+    let rows = `
+      <ui5-table-row>
+        <ui5-table-cell>Notebook Basic 15HT-1000</ui5-table-cell>
+        <ui5-table-cell>Very Best Screens</ui5-table-cell>
+        <ui5-table-cell>30 x 18 x 3cm</ui5-table-cell>
+        <ui5-table-cell>4.2KG</ui5-table-cell>
+        <ui5-table-cell>956EUR</ui5-table-cell>
+      </ui5-table-row>
+    </ui5-table>
     `
-  }
 
+    return html`
+      <span>${this.message}</span>
 
-  private _onClick() {
-    this.count++
-  }
-
-  foo(): string {
-    return "foo"
+      <ui5-table>
+      <ui5-table-column slot="columns">
+        <span>Item</span>
+      </ui5-table-column>
+      <ui5-table-column slot="columns">
+        <span>Item2</span>
+      </ui5-table-column>
+      ${rows}
+      `
   }
 }
 
