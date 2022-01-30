@@ -7,8 +7,4 @@ export default defineConfig({
     outDir: '.tmp/dist',
     minify: false,
   },
-  server: {
-    port: 8000,
-    open: '/index.html',
-  },
 })
