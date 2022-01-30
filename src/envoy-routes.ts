@@ -7,8 +7,8 @@ import { customElement, property } from 'lit/decorators.js'
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement('my-element')
-export class MyElement extends LitElement {
+@customElement('envoy-routes')
+export class EnvoyRoutes extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -51,6 +51,6 @@ export class MyElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'my-element': MyElement
+    'envoy-routes': EnvoyRoutes
   }
 }
