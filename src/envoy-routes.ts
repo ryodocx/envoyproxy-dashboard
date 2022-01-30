@@ -73,8 +73,9 @@ export class EnvoyRoutes extends LitElement {
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "envoy-routes": EnvoyRoutes
-  }
-}
+// 不要?
+// declare global {
+//   interface HTMLElementTagNameMap {
+//     "envoy-routes": EnvoyRoutes
+//   }
+// }
