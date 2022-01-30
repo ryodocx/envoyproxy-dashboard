@@ -11,8 +11,4 @@ export default defineConfig({
     port: 8000,
     open: '/index.html',
   },
-  preview: {
-    port: 8001,
-    open: '/index.html',
-  },
 })
