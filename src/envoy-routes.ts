@@ -28,7 +28,7 @@ export class EnvoyRoutes extends LitElement {
   @property({ type: String })
   message = ""
 
-  @property({ type: Map })
+  @property()
   envoyData = {}
 
   constructor() {
@@ -47,26 +47,28 @@ export class EnvoyRoutes extends LitElement {
   }
 
   render() {
-    let rows = `
-      <ui5-table-row>
-        <ui5-table-cell>Notebook Basic 15HT-1000</ui5-table-cell>
-        <ui5-table-cell>Very Best Screens</ui5-table-cell>
-        <ui5-table-cell>30 x 18 x 3cm</ui5-table-cell>
-        <ui5-table-cell>4.2KG</ui5-table-cell>
-        <ui5-table-cell>956EUR</ui5-table-cell>
-      </ui5-table-row>
-    </ui5-table>
-    `
+    const rows = [];
+    for (const v of this.envoyData.configs) {
+      rows.push(
+        html`
+          <ui5-table-row>
+            <ui5-table-cell>${v["@type"]}</ui5-table-cell>
+            <ui5-table-cell>${v.last_updated}</ui5-table-cell>
+          </ui5-table-row>
+        </ui5-table>
+        `
+      )
+    }
 
     return html`
       <span>${this.message}</span>
 
       <ui5-table>
       <ui5-table-column slot="columns">
-        <span>Item</span>
+        <span>@type</span>
       </ui5-table-column>
       <ui5-table-column slot="columns">
-        <span>Item2</span>
+        <span>last_updated</span>
       </ui5-table-column>
       ${rows}
       `
