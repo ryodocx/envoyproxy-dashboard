@@ -5,6 +5,8 @@ import "@ui5/webcomponents/dist/TableColumn.js"
 import "@ui5/webcomponents/dist/TableRow.js"
 import "@ui5/webcomponents/dist/TableCell.js"
 
+const isDevMode = import.meta.env.DEV
+
 /**
  * An example element.
  *
@@ -34,12 +36,12 @@ export class EnvoyRoutes extends LitElement {
 
     fetch(".vscode/envoy.json")
       .then(response => {
-        import.meta.env.DEV && console.log("envoy.json response", response)
+        isDevMode && console.log("envoy.json response", response)
         this.message = `fetch envoy.json -> ${response.statusText}`
         return response.json()
       })
       .then(data => {
-        import.meta.env.DEV && console.log("envoy.json data", data)
+        isDevMode && console.log("envoy.json data", data)
         this.envoyData = data
       })
   }
