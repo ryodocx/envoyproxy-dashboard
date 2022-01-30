@@ -3,6 +3,9 @@
     "serve": "vite serve",
     "build": "vite build"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "dependencies": {
     "lit": "^2.1.2"
   },
