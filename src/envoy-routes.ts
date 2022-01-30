@@ -46,13 +46,11 @@ export class EnvoyRoutes extends LitElement {
 
     fetch(".vscode/envoy.json")
       .then(response => {
-        import.meta.env.DEV && console.log("envoy.json response", response);
+        import.meta.env.DEV && console.log("envoy.json response", response)
+        return response.json()
       })
       .then(data => {
-        // handle success
-        console.log("envoy.json data", data)
-        // let s = Object.keys(data)
-        this.envoyDataCount = 5
+        import.meta.env.DEV && console.log("envoy.json data", data)
       })
   }
 
