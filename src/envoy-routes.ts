@@ -1,9 +1,6 @@
 import { html, css, LitElement } from "lit"
 import { customElement, property } from "lit/decorators.js"
-import "@ui5/webcomponents/dist/Table.js"
-import "@ui5/webcomponents/dist/TableColumn.js"
-import "@ui5/webcomponents/dist/TableRow.js"
-import "@ui5/webcomponents/dist/TableCell.js"
+import "@lrnwebcomponents/lrn-table"
 
 const isDevMode = import.meta.env.DEV
 
@@ -51,7 +48,7 @@ export class EnvoyRoutes extends LitElement {
     for (const v of this.envoyData.configs) {
       rows.push(
         html`
-          <ui5-table-row>
+          <ui5-table-row type="Active">
             <ui5-table-cell>${v["@type"]}</ui5-table-cell>
             <ui5-table-cell>${v.last_updated}</ui5-table-cell>
           </ui5-table-row>
@@ -63,7 +60,7 @@ export class EnvoyRoutes extends LitElement {
     return html`
       <span>${this.message}</span>
 
-      <ui5-table>
+      <ui5-table >
       <ui5-table-column slot="columns">
         <span>@type</span>
       </ui5-table-column>

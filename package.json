@@ -7,8 +7,6 @@
     "node": "16.x"
   },
   "dependencies": {
-    "@ui5/webcomponents": "^1.1.2",
-    "axios": "^0.25.0",
     "lit": "^2.1.2"
   },
   "devDependencies": {
