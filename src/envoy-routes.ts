@@ -44,7 +44,7 @@ export class EnvoyRoutes extends LitElement {
   render() {
     return html`
       <vaadin-grid .items="${this.envoyData.configs[1].dynamic_active_clusters}" theme="column-borders" all-rows-visible>
-        <vaadin-grid-filter-column path="cluster.name" auto-width></vaadin-grid-filter-column>
+        <vaadin-grid-filter-column path="cluster.name" auto-width ></vaadin-grid-filter-column>
         <vaadin-grid-filter-column path="last_updated" auto-width></vaadin-grid-filter-column>
         <vaadin-grid-filter-column path="version_info" auto-width></vaadin-grid-filter-column>
       </vaadin-grid>
