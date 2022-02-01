@@ -1,15 +1,14 @@
 import { html, css, LitElement } from "lit"
 import { customElement, property } from "lit/decorators.js"
-import "@lrnwebcomponents/lrn-table"
+
+import '@vaadin/grid/theme/material/vaadin-grid.js'
+import '@vaadin/grid/theme/material/vaadin-grid-filter-column.js'
+// import '@vaadin/grid/theme/material/vaadin-grid-selection-column.js'
+import '@vaadin/grid/theme/material/vaadin-grid-sort-column.js'
+// import '@vaadin/grid/theme/material/vaadin-grid-tree-column.js'
 
 const isDevMode = import.meta.env.DEV
 
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
 @customElement("envoy-routes")
 export class EnvoyRoutes extends LitElement {
 
@@ -18,7 +17,6 @@ export class EnvoyRoutes extends LitElement {
       display: block;
       border: solid 1px gray;
       padding: 16px;
-      max-width: 800px;
     }
   `
 
@@ -44,30 +42,12 @@ export class EnvoyRoutes extends LitElement {
   }
 
   render() {
-    const rows = [];
-    for (const v of this.envoyData.configs) {
-      rows.push(
-        html`
-          <ui5-table-row type="Active">
-            <ui5-table-cell>${v["@type"]}</ui5-table-cell>
-            <ui5-table-cell>${v.last_updated}</ui5-table-cell>
-          </ui5-table-row>
-        </ui5-table>
-        `
-      )
-    }
-
     return html`
-      <span>${this.message}</span>
-
-      <ui5-table >
-      <ui5-table-column slot="columns">
-        <span>@type</span>
-      </ui5-table-column>
-      <ui5-table-column slot="columns">
-        <span>last_updated</span>
-      </ui5-table-column>
-      ${rows}
+      <vaadin-grid .items="${this.envoyData.configs[1].dynamic_active_clusters}" theme="column-borders" all-rows-visible>
+        <vaadin-grid-filter-column path="cluster.name" auto-width></vaadin-grid-filter-column>
+        <vaadin-grid-filter-column path="last_updated" auto-width></vaadin-grid-filter-column>
+        <vaadin-grid-filter-column path="version_info" auto-width></vaadin-grid-filter-column>
+      </vaadin-grid>
       `
   }
 }
