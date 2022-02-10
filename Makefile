@@ -4,7 +4,8 @@ build: go-build
 
 go-build: .tmp/bin/*
 
-.tmp/bin/*: .tmp/dist/index.html go.sum backend/db/client.go
+.tmp/bin/*: .tmp/dist/index.html go.sum
+	go fmt ./...
 	go build -o .tmp/bin/ .
 
 go.sum:
