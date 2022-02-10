@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"envoyproxy-dashboard/pkg/service"
+	"envoyproxy-dashboard/backend/service"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -32,6 +32,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 
 	// setup service instance
 	c := service.Config{
@@ -41,6 +42,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer s.Close()
 
 	// setup static resource
 	webRoot, err := fs.Sub(assets, ".tmp/dist") // TODO: change dir

@@ -2,7 +2,7 @@ package service_test
 
 import (
 	"database/sql"
-	"envoyproxy-dashboard/pkg/service"
+	"envoyproxy-dashboard/backend/service"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -10,7 +10,7 @@ import (
 
 func TestNew(t *testing.T) {
 
-	inMemDB, err := sql.Open("sqlite3", ":memory:")
+	inMemDB, err := sql.Open("sqlite3", ":memory:?_fk=1")
 	if err != nil {
 		t.Fatal("can't open in-memory DB", err)
 	}
@@ -20,8 +20,9 @@ func TestNew(t *testing.T) {
 	}
 	s, err := service.New(c)
 	if err != nil {
-		t.Fatal("can't init new Service instance", err)
+		t.Fatal("can't init new Service instance:", err)
 	}
 
 	_ = s // TODO: check behavior
+	s.Debug()
 }

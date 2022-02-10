@@ -7,11 +7,11 @@ import (
 	"net/url"
 	"os"
 
-	admin "github.com/envoyproxy/go-control-plane/envoy/admin/v3"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
 	// import for Unmarshal JSON to proto.Message
+	admin "github.com/envoyproxy/go-control-plane/envoy/admin/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/accesslog/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/bootstrap/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/cluster/v3"
@@ -25,7 +25,7 @@ import (
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/overload/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/ratelimit/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/rbac/v3"
-	_ "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
+	route "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/tap/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/trace/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/data/accesslog/v3"
@@ -255,11 +255,7 @@ func (c *client) GetConfigDump() (*ConfigDump, error) {
 			switch typeURL := c.GetTypeUrl(); typeURL {
 			case "type.googleapis.com/envoy.admin.v3.BootstrapConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#BootstrapConfigDump
-				var d admin.BootstrapConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
-					return nil, err
-				}
-				configDump.BootstrapConfigDump = &d
+				// Do nothing for security concern
 			case "type.googleapis.com/envoy.admin.v3.ClustersConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#ClustersConfigDump
 				var d admin.ClustersConfigDump
@@ -305,4 +301,31 @@ func (c *client) GetConfigDump() (*ConfigDump, error) {
 		}
 	}
 	return configDump, nil
+}
+
+func (c *client) GetRouteConfigurations() ([]*route.RouteConfiguration, error) {
+	d, err := c.GetConfigDump()
+	if err != nil {
+		return nil, err
+	}
+
+	var routes []*route.RouteConfiguration
+
+	addRoute := func(b []byte) error {
+		r := &route.RouteConfiguration{}
+		if err := proto.Unmarshal(b, r); err != nil {
+			return err
+		}
+		routes = append(routes, r)
+		return nil
+	}
+
+	for _, v := range d.RoutesConfigDump.GetStaticRouteConfigs() {
+		addRoute(v.RouteConfig.Value)
+	}
+	for _, v := range d.RoutesConfigDump.GetDynamicRouteConfigs() {
+		addRoute(v.RouteConfig.Value)
+	}
+
+	return routes, nil
 }

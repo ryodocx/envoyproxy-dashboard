@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2021",
     "module": "es2020",
-    "rootDir": "./src",
+    "rootDir": "./frontend",
     "moduleResolution": "node",
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -19,6 +19,6 @@
     "useDefineForClassFields": false
   },
   "include": [
-    "./src/**/*.ts"
+    "./frontend/**/*.ts"
   ],
 }
