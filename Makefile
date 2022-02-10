@@ -1,3 +1,5 @@
+#!/usr/bin/make -f
+
 build: go-build
 
 go-build: .tmp/bin/*
