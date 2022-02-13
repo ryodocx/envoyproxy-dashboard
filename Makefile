@@ -1,5 +1,6 @@
 #!/usr/bin/make -f
 
+### Build
 build: go-build
 
 go-build: .tmp/bin/*
@@ -19,3 +20,10 @@ backend/db/client.go: backend/db/schema/*.go
 
 node_modules/.package-lock.json:
 	npm install
+
+### Test
+
+test: go-test
+
+go-test:
+	 go test ./...
