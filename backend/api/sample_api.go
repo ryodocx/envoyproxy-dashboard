@@ -6,7 +6,7 @@ import (
 )
 
 // /sample
-func (s *server) sampleAPI(w http.ResponseWriter, r *http.Request) {
+func (s *Server) sampleAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	fmt.Fprintf(w, `{"key": "value"}`)
 }

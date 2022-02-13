@@ -18,19 +18,19 @@ type Config struct {
 	Assets fs.FS
 }
 
-type server struct {
+type Server struct {
 	db  *db.Client
 	mux *http.ServeMux
 }
 
-func NewServer(c Config) (*server, error) {
+func NewServer(c Config) (*Server, error) {
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
 		return nil, fmt.Errorf("error at ping to DB: %s", err.Error())
 	}
 
 	// service instrance
-	s := &server{
+	s := &Server{
 		db:  db.NewClient(db.Driver(entsql.OpenDB("sqlite3", c.DB))),
 		mux: &http.ServeMux{},
 	}
@@ -50,6 +50,6 @@ func NewServer(c Config) (*server, error) {
 }
 
 // implementation of http.Handler interface
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.mux.ServeHTTP(w, r)
 }
