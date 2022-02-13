@@ -33,5 +33,4 @@ func TestNewServer(t *testing.T) {
 	}
 
 	_ = s // TODO: check behavior
-	// s.Debug()
 }

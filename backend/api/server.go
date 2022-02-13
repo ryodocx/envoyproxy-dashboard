@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"io/fs"
 	"net/http"
 
@@ -10,7 +11,6 @@ import (
 
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -27,7 +27,7 @@ func NewServer(c Config) (*server, error) {
 
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
-		return nil, errors.Wrap(err, "error at ping to DB")
+		return nil, fmt.Errorf("error at ping to DB: %s", err.Error())
 	}
 
 	// service instrance
@@ -43,27 +43,14 @@ func NewServer(c Config) (*server, error) {
 	s.mux.Handle("/", http.FileServer(http.FS(c.Assets)))
 
 	// migration
-	if err := s.migration(); err != nil {
-		return nil, errors.Wrap(err, "migration failed")
+	if err := s.db.Schema.Create(context.Background()); err != nil {
+		return nil, fmt.Errorf("migration failed: %s", err.Error())
 	}
 
 	return s, nil
 }
 
+// implementation of http.Handler interface
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.mux.ServeHTTP(w, r)
-}
-
-func (s *server) Debug() {
-
-	s.db.Route.Create().
-		SetDomain("domain").
-		SetPath("/")
-}
-
-func (s *server) migration() error {
-	if err := s.db.Schema.Create(context.Background()); err != nil {
-		return errors.Wrap(err, "failed creating schema resources")
-	}
-	return nil
 }

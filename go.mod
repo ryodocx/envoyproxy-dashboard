@@ -6,7 +6,6 @@ require (
 	entgo.io/ent v0.10.0
 	github.com/envoyproxy/go-control-plane v0.10.1
 	github.com/mattn/go-sqlite3 v1.14.11
-	github.com/pkg/errors v0.9.1
 	google.golang.org/protobuf v1.27.1
 	istio.io/api v0.0.0-20220210032859-49f540feee0b
 )
