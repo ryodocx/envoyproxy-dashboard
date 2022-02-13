@@ -23,7 +23,7 @@ type server struct {
 	mux *http.ServeMux
 }
 
-func NewServer(c Config) (http.Handler, error) {
+func NewServer(c Config) (*server, error) {
 
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
