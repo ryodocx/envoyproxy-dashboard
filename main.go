@@ -30,7 +30,7 @@ func init() {
 
 func main() {
 	// setup DB
-	db, err := sql.Open("sqlite3", ":memory:")
+	db, err := sql.Open("sqlite3", ":memory:?_fk=1")
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +45,7 @@ func main() {
 	// setup server instance
 	s, err := api.NewServer(api.Config{
 		DB:     db,
-		Assets: &a,
+		Assets: a,
 	})
 	if err != nil {
 		panic(err)

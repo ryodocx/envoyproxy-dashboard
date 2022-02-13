@@ -1,4 +1,4 @@
-package service
+package api
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 )
 
 // /sample
-func (s *Service) sampleAPI(w http.ResponseWriter, r *http.Request) {
+func (s *server) sampleAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	fmt.Fprintf(w, `{"key": "value"}`)
 }

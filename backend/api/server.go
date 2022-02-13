@@ -1,8 +1,9 @@
-package service
+package api
 
 import (
 	"context"
 	"database/sql"
+	"io/fs"
 	"net/http"
 
 	"envoyproxy-dashboard/backend/db"
@@ -13,15 +14,16 @@ import (
 )
 
 type Config struct {
-	DB *sql.DB
+	DB     *sql.DB
+	Assets fs.FS
 }
 
-type Service struct {
-	db           *db.Client
-	HttpServeMux *http.ServeMux
+type server struct {
+	db  *db.Client
+	mux *http.ServeMux
 }
 
-func New(c Config) (*Service, error) {
+func NewServer(c Config) (http.Handler, error) {
 
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
@@ -29,13 +31,16 @@ func New(c Config) (*Service, error) {
 	}
 
 	// service instrance
-	s := &Service{
-		db:           db.NewClient(db.Driver(entsql.OpenDB("sqlite3", c.DB))),
-		HttpServeMux: &http.ServeMux{},
+	s := &server{
+		db:  db.NewClient(db.Driver(entsql.OpenDB("sqlite3", c.DB))),
+		mux: &http.ServeMux{},
 	}
 
 	// setup endpoints
-	s.HttpServeMux.HandleFunc("/sample", s.sampleAPI)
+	s.mux.HandleFunc("/sample", s.sampleAPI)
+
+	// setup static resource
+	s.mux.Handle("/", http.FileServer(http.FS(c.Assets)))
 
 	// migration
 	if err := s.migration(); err != nil {
@@ -45,18 +50,18 @@ func New(c Config) (*Service, error) {
 	return s, nil
 }
 
-func (s *Service) Close() {
-	s.db.Close()
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.mux.ServeHTTP(w, r)
 }
 
-func (s *Service) Debug() {
+func (s *server) Debug() {
 
 	s.db.Route.Create().
 		SetDomain("domain").
 		SetPath("/")
 }
 
-func (s *Service) migration() error {
+func (s *server) migration() error {
 	if err := s.db.Schema.Create(context.Background()); err != nil {
 		return errors.Wrap(err, "failed creating schema resources")
 	}
