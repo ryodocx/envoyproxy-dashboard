@@ -21,14 +21,12 @@ var (
 	assets embed.FS
 )
 
-func init() {
+func main() {
 	if e := os.Getenv("ENVOY_DASHBOARD_LISTENADDR"); e != "" {
 		// TODO: validation
 		listenAddr = e
 	}
-}
 
-func main() {
 	// setup DB
 	db, err := sql.Open("sqlite3", ":memory:?_fk=1")
 	if err != nil {
