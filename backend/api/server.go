@@ -24,7 +24,6 @@ type server struct {
 }
 
 func NewServer(c Config) (*server, error) {
-
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
 		return nil, fmt.Errorf("error at ping to DB: %s", err.Error())
