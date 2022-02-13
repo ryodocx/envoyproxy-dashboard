@@ -8,16 +8,18 @@ import (
 	"net/http"
 	"os"
 
-	"envoyproxy-dashboard/backend/service"
+	"envoyproxy-dashboard/backend/api"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// TODO: change dir
-//go:embed .tmp/dist/*
-var assets embed.FS
+var (
+	listenAddr = "0.0.0.0:8080"
 
-var listenAddr = "0.0.0.0:8080"
+	// TODO: change dir
+	//go:embed .tmp/dist/*
+	assets embed.FS
+)
 
 func init() {
 	if e := os.Getenv("ENVOY_DASHBOARD_LISTENADDR"); e != "" {
@@ -34,26 +36,24 @@ func main() {
 	}
 	defer db.Close()
 
-	// setup service instance
-	c := service.Config{
-		DB: db,
-	}
-	s, err := service.New(c)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
 	// setup static resource
-	webRoot, err := fs.Sub(assets, ".tmp/dist") // TODO: change dir
+	a, err := fs.Sub(assets, ".tmp/dist") // TODO: change dir
 	if err != nil {
 		panic(err)
 	}
-	s.HttpServeMux.Handle("/", http.FileServer(http.FS(webRoot)))
+
+	// setup server instance
+	s, err := api.NewServer(api.Config{
+		DB:     db,
+		Assets: &a,
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("Start server: %s\n", listenAddr)
 	// TODO: gracefull shutdown
-	if err := http.ListenAndServe(listenAddr, s.HttpServeMux); err != nil {
+	if err := http.ListenAndServe(listenAddr, s); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 }
