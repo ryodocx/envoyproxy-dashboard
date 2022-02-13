@@ -2,15 +2,33 @@ package envoy_test
 
 import (
 	"envoyproxy-dashboard/backend/client/envoy"
+	"net/url"
 	"testing"
 
 	route "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
 	"google.golang.org/protobuf/proto"
 )
 
+var envoyClient *envoy.Client
+
+func init() {
+	u, err := url.Parse("http://127.0.0.1:15000/config_dump")
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := envoy.New(envoy.Config{
+		EnvoyURL: u,
+	})
+	if err != nil {
+		panic(err)
+	}
+	envoyClient = c
+}
+
 func TestGetConfigDump(t *testing.T) {
-	c := envoy.New()
-	configDump, err := c.GetConfigDump()
+
+	configDump, err := envoyClient.GetConfigDump()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,8 +58,7 @@ func TestGetConfigDump(t *testing.T) {
 }
 
 func TestGetRouteConfigurations(t *testing.T) {
-	c := envoy.New()
-	configs, err := c.GetRouteConfigurations()
+	configs, err := envoyClient.GetRouteConfigurations()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,5 +67,4 @@ func TestGetRouteConfigurations(t *testing.T) {
 		t.Logf("%d:\n", i)
 		t.Logf("%#v:\n", v.VirtualHosts[0].Domains)
 	}
-
 }

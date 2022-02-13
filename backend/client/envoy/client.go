@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -202,30 +201,35 @@ import (
 	_ "istio.io/api/envoy/extensions/stats"
 )
 
-type client struct {
+type Config struct {
+	EnvoyURL *url.URL
+}
+
+type Client struct {
 	httpClient *http.Client
+	envoyURL   url.URL
 }
 
-func New() *client {
-	return &client{
+func New(conf Config) (*Client, error) {
+	return &Client{
 		httpClient: &http.Client{},
-	}
+		envoyURL:   *conf.EnvoyURL,
+	}, nil
 }
 
-var envoyAdminInterfaceURL = "http://127.0.0.1:15000/config_dump"
-
-func init() {
-	if e := os.Getenv("ENVOY_DASHBORAD_ADMIN_INTERFACE_URL"); e != "" {
-		if _, err := url.Parse(e); err != nil {
-			panic(err)
-		}
-		envoyAdminInterfaceURL = e
-	}
+type ConfigDump struct {
+	BootstrapConfigDump    *admin.BootstrapConfigDump
+	ClustersConfigDump     *admin.ClustersConfigDump
+	ListenersConfigDump    *admin.ListenersConfigDump
+	ScopedRoutesConfigDump *admin.ScopedRoutesConfigDump
+	RoutesConfigDump       *admin.RoutesConfigDump
+	// SecretsConfigDump      *admin.SecretsConfigDump
+	EndpointsConfigDump *admin.EndpointsConfigDump
 }
 
-func (c *client) GetConfigDump() (*ConfigDump, error) {
+func (c *Client) GetConfigDump() (*ConfigDump, error) {
 
-	resp, err := c.httpClient.Get(envoyAdminInterfaceURL)
+	resp, err := c.httpClient.Get(c.envoyURL.String())
 	if err != nil {
 		return nil, err
 	}
@@ -303,7 +307,7 @@ func (c *client) GetConfigDump() (*ConfigDump, error) {
 	return configDump, nil
 }
 
-func (c *client) GetRouteConfigurations() ([]*route.RouteConfiguration, error) {
+func (c *Client) GetRouteConfigurations() ([]*route.RouteConfiguration, error) {
 	d, err := c.GetConfigDump()
 	if err != nil {
 		return nil, err
