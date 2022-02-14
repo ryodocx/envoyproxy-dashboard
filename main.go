@@ -41,10 +41,12 @@ func main() {
 	}
 
 	// setup server instance
-	s, err := api.New(api.Config{
-		DB:     db,
-		Assets: a,
-	})
+	s, err := api.New(
+		api.Config{
+			DB:     db,
+			Assets: a,
+		},
+	)
 	if err != nil {
 		panic(err)
 	}
