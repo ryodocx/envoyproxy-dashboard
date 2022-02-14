@@ -50,6 +50,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer s.Close()
 
 	fmt.Printf("Start server: %s\n", listenAddr)
 	// TODO: gracefull shutdown

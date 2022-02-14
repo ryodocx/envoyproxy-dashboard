@@ -53,3 +53,7 @@ func New(c Config) (*Server, error) {
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.mux.ServeHTTP(w, r)
 }
+
+func (s *Server) Close() error {
+	return s.db.Close()
+}
