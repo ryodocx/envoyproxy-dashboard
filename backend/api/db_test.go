@@ -27,7 +27,7 @@ func TestDB(t *testing.T) {
 		DB:     inMemDB,
 		Assets: &dummyFS{},
 	}
-	s, err := NewServer(c)
+	s, err := New(c)
 	if err != nil {
 		t.Fatal("can't init new Server instance:", err)
 	}
