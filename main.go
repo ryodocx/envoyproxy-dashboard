@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// setup server instance
-	s, err := api.NewServer(api.Config{
+	s, err := api.New(api.Config{
 		DB:     db,
 		Assets: a,
 	})
