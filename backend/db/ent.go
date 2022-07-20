@@ -3,7 +3,7 @@
 package db
 
 import (
-	"envoyproxy-dashboard/backend/db/route"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/route"
 	"errors"
 	"fmt"
 

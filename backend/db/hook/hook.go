@@ -4,7 +4,7 @@ package hook
 
 import (
 	"context"
-	"envoyproxy-dashboard/backend/db"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db"
 	"fmt"
 )
 

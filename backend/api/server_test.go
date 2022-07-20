@@ -2,10 +2,11 @@ package api_test
 
 import (
 	"database/sql"
-	"envoyproxy-dashboard/backend/api"
 	"fmt"
 	"io/fs"
 	"testing"
+
+	"github.com/ryodocx/envoyproxy-dashboard/backend/api"
 
 	_ "github.com/mattn/go-sqlite3"
 )

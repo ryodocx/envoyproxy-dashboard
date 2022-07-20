@@ -1,11 +1,11 @@
 package envoy_test
 
 import (
-	"envoyproxy-dashboard/backend/client/envoy"
 	"net/url"
 	"testing"
 
 	route "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/client/envoy"
 	"google.golang.org/protobuf/proto"
 )
 

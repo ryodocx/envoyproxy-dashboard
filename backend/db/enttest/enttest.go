@@ -4,9 +4,9 @@ package enttest
 
 import (
 	"context"
-	"envoyproxy-dashboard/backend/db"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db"
 	// required by schema hooks.
-	_ "envoyproxy-dashboard/backend/db/runtime"
+	_ "github.com/ryodocx/envoyproxy-dashboard/backend/db/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

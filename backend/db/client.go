@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log"
 
-	"envoyproxy-dashboard/backend/db/migrate"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/migrate"
 
-	"envoyproxy-dashboard/backend/db/route"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/route"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

@@ -3,7 +3,7 @@
 package route
 
 import (
-	"envoyproxy-dashboard/backend/db/predicate"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/predicate"
 
 	"entgo.io/ent/dialect/sql"
 )

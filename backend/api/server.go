@@ -7,7 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 
-	"envoyproxy-dashboard/backend/db"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db"
 
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/mattn/go-sqlite3"
@@ -36,7 +36,25 @@ func New(c Config) (*Server, error) {
 	}
 
 	// setup endpoints
-	s.mux.HandleFunc("/sample", s.sampleAPI)
+	endpoints := []struct {
+		path    string
+		handler func(w http.ResponseWriter, r *http.Request)
+		config  *middlewareConfig
+	}{
+		{
+			path:    "/sample",
+			handler: s.sampleAPI,
+			config:  nil,
+		},
+		{
+			path:    "/routes",
+			handler: s.routes,
+			config:  nil,
+		},
+	}
+	for _, v := range endpoints {
+		s.mux.HandleFunc(middleware(v.path, v.handler, v.config))
+	}
 
 	// setup static resource
 	s.mux.Handle("/", http.FileServer(http.FS(c.Assets)))
@@ -56,4 +74,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) Close() error {
 	return s.db.Close()
+}
+
+type middlewareConfig struct{}
+
+func middleware(path string, handler func(w http.ResponseWriter, r *http.Request), c *middlewareConfig) (string, func(http.ResponseWriter, *http.Request)) {
+	return path, func(w http.ResponseWriter, r *http.Request) {
+		// TODO: 共通処理
+		handler(w, r)
+	}
 }

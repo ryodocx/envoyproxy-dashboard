@@ -3,8 +3,8 @@
 package db
 
 import (
-	"envoyproxy-dashboard/backend/db/route"
-	"envoyproxy-dashboard/backend/db/schema"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/route"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/db/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

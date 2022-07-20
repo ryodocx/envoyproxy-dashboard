@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"envoyproxy-dashboard/backend/api"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/api"
 
 	_ "github.com/mattn/go-sqlite3"
 )
