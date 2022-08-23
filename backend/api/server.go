@@ -13,24 +13,29 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// interface guard
+var (
+	_ http.Handler = (*server)(nil)
+)
+
 type Config struct {
 	DB     *sql.DB
 	Assets fs.FS
 }
 
-type Server struct {
+type server struct {
 	db  *db.Client
 	mux *http.ServeMux
 }
 
-func New(c Config) (*Server, error) {
+func New(c Config) (http.Handler, error) {
 	// check DB connection
 	if err := c.DB.Ping(); err != nil {
 		return nil, fmt.Errorf("error at ping to DB: %s", err.Error())
 	}
 
 	// service instrance
-	s := &Server{
+	s := &server{
 		db:  db.NewClient(db.Driver(entsql.OpenDB("sqlite3", c.DB))),
 		mux: &http.ServeMux{},
 	}
@@ -67,20 +72,17 @@ func New(c Config) (*Server, error) {
 	return s, nil
 }
 
-// implementation of http.Handler interface
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.mux.ServeHTTP(w, r)
-}
-
-func (s *Server) Close() error {
-	return s.db.Close()
-}
-
 type middlewareConfig struct{}
 
-func middleware(path string, handler func(w http.ResponseWriter, r *http.Request), c *middlewareConfig) (string, func(http.ResponseWriter, *http.Request)) {
+func middleware(path string, handler http.HandlerFunc, c *middlewareConfig) (string, http.HandlerFunc) {
 	return path, func(w http.ResponseWriter, r *http.Request) {
 		// TODO: 共通処理
 		handler(w, r)
 	}
+}
+
+// implementation of http.Handler interface
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.mux.ServeHTTP(w, r)
+	defer s.db.Close()
 }

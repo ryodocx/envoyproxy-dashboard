@@ -5,8 +5,9 @@ import (
 	"net/http"
 )
 
-// /sample
-func (s *Server) sampleAPI(w http.ResponseWriter, r *http.Request) {
+// GET /routes
+func (s *server) routes(w http.ResponseWriter, r *http.Request) {
+	// TODO
 	w.Header().Set("content-type", "application/json")
 	fmt.Fprintf(w, `{"key": "value"}`)
 }

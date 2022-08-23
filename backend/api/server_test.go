@@ -34,4 +34,5 @@ func TestNewServer(t *testing.T) {
 	}
 
 	_ = s // TODO: check behavior
+	// https://budougumi0617.github.io/2020/05/29/go-testing-httptest/
 }
