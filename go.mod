@@ -7,7 +7,7 @@ require (
 	github.com/envoyproxy/go-control-plane v0.10.3
 	github.com/mattn/go-sqlite3 v1.14.14
 	google.golang.org/protobuf v1.28.0
-	istio.io/api v0.0.0-20220718152858-7bfd83f34438 // 1.14.2
+	istio.io/api v0.0.0-20220728184806-7837c4e62d82 // 1.14.3
 )
 
 require (
