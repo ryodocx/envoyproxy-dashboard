@@ -1,8 +1,20 @@
 package client
 
-type Config struct{}
-type Client struct{}
+import "github.com/ryodocx/envoyproxy-dashboard/backend/model"
 
-func New() (*Client, error) {
-	return &Client{}, nil
+// type Config struct{}
+// type Client struct{}
+
+// func New() (*Client, error) {
+// 	// TODO
+// 	return &Client{}, nil
+// }
+
+// func (c *Client) GetRoutes() ([]*model.Route, error) {
+// 	// TODO
+// 	return []*model.Route{}, nil
+// }
+
+type Client interface {
+	GetRoutes() ([]*model.Route, error)
 }

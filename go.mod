@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	entgo.io/ent v0.11.1
+	github.com/cncf/xds/go v0.0.0-20220520190051-1e77728a1eaa // 
 	github.com/envoyproxy/go-control-plane v0.10.3
 	github.com/mattn/go-sqlite3 v1.14.14
 	google.golang.org/protobuf v1.28.0
@@ -15,7 +16,6 @@ require (
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
-	github.com/cncf/xds/go v0.0.0-20220314180256-7f1daf1720fc // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.7 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
