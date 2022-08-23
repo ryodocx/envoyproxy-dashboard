@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/ryodocx/envoyproxy-dashboard/backend/api"
-	_ "modernc.org/sqlite"
 )
 
 var (
@@ -49,7 +49,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer s.Close()
 
 	fmt.Printf("Start server: %s\n", listenAddr)
 	// TODO: gracefull shutdown
