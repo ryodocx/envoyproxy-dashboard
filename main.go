@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	listenAddr = "0.0.0.0:8080"
+	listenAddr = "127.0.0.1:8080"
 
 	// TODO: change dir
 	//go:embed .tmp/dist/*
