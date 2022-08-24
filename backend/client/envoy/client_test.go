@@ -49,7 +49,8 @@ func TestGetConfigDump(t *testing.T) {
 		t.Logf("%d:\n", i)
 
 		var route route.RouteConfiguration
-		proto.Unmarshal(v.RouteConfig.Value, &route)
+		v.RouteConfig.UnmarshalTo(&route)
+		// proto.Unmarshal(v.RouteConfig.Value, &route)
 
 		for _, v := range route.VirtualHosts {
 			t.Logf("domains: %v:\n", v.Domains)

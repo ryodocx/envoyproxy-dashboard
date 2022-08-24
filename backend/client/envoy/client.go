@@ -10,6 +10,8 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	// import for Unmarshal JSON to proto.Message
+	_ "github.com/cncf/xds/go/udpa/type/v1"
+	_ "github.com/cncf/xds/go/xds/type/v3"
 	admin "github.com/envoyproxy/go-control-plane/envoy/admin/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/accesslog/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/config/bootstrap/v3"
@@ -67,7 +69,6 @@ import (
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/csrf/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/decompressor/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/dynamic_forward_proxy/v3"
-	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/dynamo/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/ext_authz/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/ext_proc/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/http/fault/v3"
@@ -98,7 +99,6 @@ import (
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/listener/original_src/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/listener/proxy_protocol/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/listener/tls_inspector/v3"
-	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/client_ssl_auth/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/connection_limit/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/direct_response/v3"
 	_ "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/dubbo_proxy/router/v3"
@@ -262,43 +262,45 @@ func (c *Client) GetConfigDump() (*ConfigDump, error) {
 				// Do nothing for security concern
 			case "type.googleapis.com/envoy.admin.v3.ClustersConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#ClustersConfigDump
-				var d admin.ClustersConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
+				v := &admin.ClustersConfigDump{}
+				c.UnmarshalTo(v)
+				if err := c.UnmarshalTo(v); err != nil {
 					return nil, err
 				}
-				configDump.ClustersConfigDump = &d
+				configDump.ClustersConfigDump = v
 			case "type.googleapis.com/envoy.admin.v3.ListenersConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#ListenersConfigDump
-				var d admin.ListenersConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
+				v := &admin.ListenersConfigDump{}
+
+				if err := c.UnmarshalTo(v); err != nil {
 					return nil, err
 				}
-				configDump.ListenersConfigDump = &d
+				configDump.ListenersConfigDump = v
 			case "type.googleapis.com/envoy.admin.v3.ScopedRoutesConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#ScopedRoutesConfigDump
-				var d admin.ScopedRoutesConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
+				v := &admin.ScopedRoutesConfigDump{}
+				if err := c.UnmarshalTo(v); err != nil {
 					return nil, err
 				}
-				configDump.ScopedRoutesConfigDump = &d
+				configDump.ScopedRoutesConfigDump = v
 			case "type.googleapis.com/envoy.admin.v3.RoutesConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#RoutesConfigDump
-				var d admin.RoutesConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
+				v := &admin.RoutesConfigDump{}
+				if err := c.UnmarshalTo(v); err != nil {
 					return nil, err
 				}
-				configDump.RoutesConfigDump = &d
+				configDump.RoutesConfigDump = v
 			case "type.googleapis.com/envoy.admin.v3.SecretsConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#SecretsConfigDump
 				// Do nothing for security concern
 			case "type.googleapis.com/envoy.admin.v3.EndpointsConfigDump":
 				// https://pkg.go.dev/github.com/envoyproxy/go-control-plane/envoy/admin/v3#EndpointsConfigDump
 				// Never seen before
-				var d admin.EndpointsConfigDump
-				if err := proto.Unmarshal(c.Value, &d); err != nil {
+				v := &admin.EndpointsConfigDump{}
+				if err := c.UnmarshalTo(v); err != nil {
 					return nil, err
 				}
-				configDump.EndpointsConfigDump = &d
+				configDump.EndpointsConfigDump = v
 			default:
 				return nil, fmt.Errorf("unexpected TypeURL: %s", typeURL)
 			}
