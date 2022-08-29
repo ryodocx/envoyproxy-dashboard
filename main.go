@@ -1,15 +1,15 @@
 package main
 
 import (
-	"database/sql"
 	"embed"
 	"fmt"
 	"io/fs"
 	"net/http"
+	"net/url"
 	"os"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/ryodocx/envoyproxy-dashboard/backend/api"
+	"github.com/ryodocx/envoyproxy-dashboard/backend/client/envoy"
 )
 
 var (
@@ -26,24 +26,26 @@ func main() {
 		listenAddr = e
 	}
 
-	// setup DB
-	db, err := sql.Open("sqlite3", ":memory:?_fk=1")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
 	// setup static resource
 	a, err := fs.Sub(assets, ".tmp/dist") // TODO: change dir
 	if err != nil {
 		panic(err)
 	}
 
+	// setup envoy client
+	u, err := url.Parse(os.Getenv("ENVOY_ADDR"))
+	if err != nil {
+		panic(err)
+	}
+	c, err := envoy.New(envoy.Config{
+		EnvoyURL: u,
+	})
+
 	// setup server instance
 	s, err := api.New(
 		api.Config{
-			DB:     db,
 			Assets: a,
+			Client: c,
 		},
 	)
 	if err != nil {
