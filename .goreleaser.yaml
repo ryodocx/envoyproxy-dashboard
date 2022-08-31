@@ -19,6 +19,12 @@ archives:
         format: zip
 checksum:
   name_template: "checksums.txt"
+dockers:
+  - image_templates:
+      - "ghcr.io/ryodocx/envoyproxy-dashboard:{{ .Tag }}"
+      - "ghcr.io/ryodocx/envoyproxy-dashboard:v{{ .Major }}"
+      - "ghcr.io/ryodocx/envoyproxy-dashboard:v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/ryodocx/envoyproxy-dashboard:latest"
 changelog:
   sort: asc
   filters:
