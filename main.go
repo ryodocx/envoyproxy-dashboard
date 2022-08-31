@@ -16,7 +16,7 @@ var (
 	listenAddr = "127.0.0.1:8080"
 
 	// TODO: change dir
-	//go:embed .tmp/dist/*
+	// _go:embed .tmp/dist/* // TODO: restore
 	assets embed.FS
 )
 
