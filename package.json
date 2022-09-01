@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "serve": "vite serve",
+    "build": "vite build"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "dependencies": {
+    "@vaadin/grid": "^22.0.3",
+    "lit": "^2.1.2"
+  },
+  "devDependencies": {
+    "vite": "^2.7.13"
+  }
+}
