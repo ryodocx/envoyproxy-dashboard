@@ -88,18 +88,17 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 	//	*Route_FilterAction
 	//	*Route_NonForwardingAction
 	action := func(m *_route.Route) string {
-
-		if v, ok := m.Action.(*_route.Route_Route); ok {
+		switch v := m.Action.(type) {
+		case *_route.Route_Route:
 			return "proxy: " + v.Route.GetCluster()
-		}
-		if v, ok := m.Action.(*_route.Route_Redirect); ok {
+		case *_route.Route_Redirect:
 			return "redirect: " + v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
-		}
-		if v, ok := m.Action.(*_route.Route_DirectResponse); ok {
-			code := int(v.DirectResponse.GetStatus())
+		case *_route.Route_DirectResponse:
+			code := int(v.DirectResponse.Status)
 			return fmt.Sprintf("direct_response: %d %s", code, http.StatusText(code))
+		case *_route.Route_FilterAction:
+		case *_route.Route_NonForwardingAction:
 		}
-
 		return "parse error"
 	}
 
