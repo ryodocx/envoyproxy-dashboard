@@ -79,7 +79,27 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		return r
 	}
 	path := func(m *_route.RouteMatch) string {
-		return m.GetPath() + m.GetPathSeparatedPrefix() + m.GetPathTemplate() + m.GetPrefix() + m.GetSafeRegex().GetRegex()
+
+		r := func(s string) (string, bool) {
+			if len(s) > 0 {
+				return s, true
+			}
+			return s, false
+		}
+
+		if s, ok := r(m.GetPath()); ok {
+			return s
+		} else if s, ok := r(m.GetPathSeparatedPrefix()); ok {
+			return s
+		} else if s, ok := r(m.GetPathTemplate()); ok {
+			return s
+		} else if s, ok := r(m.GetPrefix()); ok {
+			return s + "*"
+		} else if s, ok := r(m.GetSafeRegex().GetRegex()); ok {
+			return "/" + s + "/"
+		}
+
+		return "parse error"
 	}
 
 	//	*Route_Route
@@ -106,7 +126,7 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 
 		r := map[string]any{}
 		for i, v := range v.Routes {
-			r[fmt.Sprintf("#%d: '%s'", i, path(v.Match))] = action(v)
+			r[fmt.Sprintf("#%d: %s", i, path(v.Match))] = action(v)
 			// r[fmt.Sprintf("match.%d", i)] = path(v.Match)
 			// r[fmt.Sprintf("match.%d.action", i)] = action(v)
 		}
