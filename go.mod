@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/cncf/xds/go v0.0.0-20220520190051-1e77728a1eaa
 	github.com/envoyproxy/go-control-plane v0.10.3
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/protobuf v1.28.1
 	istio.io/api v0.0.0-20220728184806-7837c4e62d82 // 1.14.3
 )
 
