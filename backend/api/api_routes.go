@@ -107,9 +107,12 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 	//	*Route_DirectResponse
 	//	*Route_FilterAction
 	//	*Route_NonForwardingAction
-	action := func(m *_route.Route) string {
-		switch v := m.Action.(type) {
+	action := func(r *_route.Route) string {
+		switch v := r.Action.(type) {
 		case *_route.Route_Route:
+			if s := r.Decorator.String(); s != "<nil>" {
+				return "proxy: " + strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
+			}
 			return "proxy: " + v.Route.GetCluster()
 		case *_route.Route_Redirect:
 			return "redirect: " + v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
