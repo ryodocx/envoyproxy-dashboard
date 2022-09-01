@@ -110,7 +110,7 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 	action := func(r *_route.Route) string {
 		switch v := r.Action.(type) {
 		case *_route.Route_Route:
-			if s := r.Decorator.String(); s != "<nil>" {
+			if s := r.Decorator.String(); strings.HasPrefix(s, `operation:`) {
 				return "proxy: " + strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
 			}
 			return "proxy: " + v.Route.GetCluster()
