@@ -39,8 +39,8 @@ func New(c Config) (http.Handler, error) {
 		config  *middlewareConfig
 	}{
 		{
-			path:    "/sample",
-			handler: s.sampleAPI,
+			path:    "/", // TODO: remove
+			handler: s.routes,
 			config:  nil,
 		},
 		{
