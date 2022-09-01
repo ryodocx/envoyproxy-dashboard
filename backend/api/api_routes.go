@@ -130,8 +130,6 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		r := map[string]any{}
 		for i, v := range v.Routes {
 			r[fmt.Sprintf("#%d: %s", i, path(v.Match))] = action(v)
-			// r[fmt.Sprintf("match.%d", i)] = path(v.Match)
-			// r[fmt.Sprintf("match.%d.action", i)] = action(v)
 		}
 
 		response[fmt.Sprint(i)] = map[string]any{
