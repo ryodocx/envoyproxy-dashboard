@@ -23,14 +23,13 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		return false
 	}
 
-	response := map[string]any{}
-
 	dump, err := s.conf.Client.GetConfigDump()
 	if e(err) {
 		return
 	}
 
 	if false {
+		response := map[string]any{}
 		// listener
 		listener := _listener.Listener{}
 		err = dump.ListenersConfigDump.DynamicListeners[0].ActiveState.Listener.UnmarshalTo(&listener)
@@ -79,7 +78,27 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		return r
 	}
 	path := func(m *_route.RouteMatch) string {
-		return m.GetPath() + m.GetPathSeparatedPrefix() + m.GetPathTemplate() + m.GetPrefix() + m.GetSafeRegex().GetRegex()
+
+		r := func(s string) (string, bool) {
+			if len(s) > 0 {
+				return s, true
+			}
+			return s, false
+		}
+
+		if s, ok := r(m.GetPath()); ok {
+			return s
+		} else if s, ok := r(m.GetPathSeparatedPrefix()); ok {
+			return s
+		} else if s, ok := r(m.GetPathTemplate()); ok {
+			return s
+		} else if s, ok := r(m.GetPrefix()); ok {
+			return s + "*"
+		} else if s, ok := r(m.GetSafeRegex().GetRegex()); ok {
+			return "/" + s + "/"
+		}
+
+		return "parse error"
 	}
 
 	//	*Route_Route
@@ -87,35 +106,38 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 	//	*Route_DirectResponse
 	//	*Route_FilterAction
 	//	*Route_NonForwardingAction
-	action := func(m *_route.Route) string {
-
-		if v, ok := m.Action.(*_route.Route_Route); ok {
-			return "proxy: " + v.Route.GetCluster()
+	action := func(r *_route.Route) (actionType, actionValue string) {
+		switch v := r.Action.(type) {
+		case *_route.Route_Route:
+			if s := r.Decorator.String(); strings.HasPrefix(s, `operation:`) {
+				return "proxy", strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
+			}
+			return "proxy", v.Route.GetCluster()
+		case *_route.Route_Redirect:
+			return "redirect", v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
+		case *_route.Route_DirectResponse:
+			code := int(v.DirectResponse.Status)
+			return "direct_response", fmt.Sprintf("%d %s", code, http.StatusText(code))
+		case *_route.Route_FilterAction:
+		case *_route.Route_NonForwardingAction:
 		}
-		if v, ok := m.Action.(*_route.Route_Redirect); ok {
-			return "redirect: " + v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
-		}
-		if v, ok := m.Action.(*_route.Route_DirectResponse); ok {
-			code := int(v.DirectResponse.GetStatus())
-			return fmt.Sprintf("direct_response: %d %s", code, http.StatusText(code))
-		}
-
-		return "parse error"
+		return "parse error", ""
 	}
 
-	for i, v := range route.VirtualHosts {
+	response := []any{}
 
-		r := map[string]any{}
-		for i, v := range v.Routes {
-			r[fmt.Sprintf("#%d: '%s'", i, path(v.Match))] = action(v)
-			// r[fmt.Sprintf("match.%d", i)] = path(v.Match)
-			// r[fmt.Sprintf("match.%d.action", i)] = action(v)
+	for _, v := range route.VirtualHosts {
+
+		r := []string{}
+		for _, v := range v.Routes {
+			actionType, actionValue := action(v)
+			r = append(r, fmt.Sprintf("%s → (%s) %s", path(v.Match), actionType, actionValue))
 		}
 
-		response[fmt.Sprint(i)] = map[string]any{
+		response = append(response, map[string]any{
 			"domains": filterDomains(v.Domains),
 			"routes":  r,
-		}
+		})
 	}
 
 	// response
