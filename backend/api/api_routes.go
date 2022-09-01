@@ -23,14 +23,13 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		return false
 	}
 
-	response := map[string]any{}
-
 	dump, err := s.conf.Client.GetConfigDump()
 	if e(err) {
 		return
 	}
 
 	if false {
+		response := map[string]any{}
 		// listener
 		listener := _listener.Listener{}
 		err = dump.ListenersConfigDump.DynamicListeners[0].ActiveState.Listener.UnmarshalTo(&listener)
@@ -107,35 +106,38 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 	//	*Route_DirectResponse
 	//	*Route_FilterAction
 	//	*Route_NonForwardingAction
-	action := func(r *_route.Route) string {
+	action := func(r *_route.Route) (actionType, actionValue string) {
 		switch v := r.Action.(type) {
 		case *_route.Route_Route:
 			if s := r.Decorator.String(); strings.HasPrefix(s, `operation:`) {
-				return "proxy: " + strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
+				return "proxy", strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
 			}
-			return "proxy: " + v.Route.GetCluster()
+			return "proxy", v.Route.GetCluster()
 		case *_route.Route_Redirect:
-			return "redirect: " + v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
+			return "redirect", v.Redirect.GetHostRedirect() + v.Redirect.GetPathRedirect()
 		case *_route.Route_DirectResponse:
 			code := int(v.DirectResponse.Status)
-			return fmt.Sprintf("direct_response: %d %s", code, http.StatusText(code))
+			return "direct_response", fmt.Sprintf("%d %s", code, http.StatusText(code))
 		case *_route.Route_FilterAction:
 		case *_route.Route_NonForwardingAction:
 		}
-		return "parse error"
+		return "parse error", ""
 	}
 
-	for i, v := range route.VirtualHosts {
+	response := []any{}
 
-		r := map[string]any{}
-		for i, v := range v.Routes {
-			r[fmt.Sprintf("#%d: %s", i, path(v.Match))] = action(v)
+	for _, v := range route.VirtualHosts {
+
+		r := []string{}
+		for _, v := range v.Routes {
+			actionType, actionValue := action(v)
+			r = append(r, fmt.Sprintf("%s → (%s) %s", path(v.Match), actionType, actionValue))
 		}
 
-		response[fmt.Sprint(i)] = map[string]any{
+		response = append(response, map[string]any{
 			"domains": filterDomains(v.Domains),
 			"routes":  r,
-		}
+		})
 	}
 
 	// response
