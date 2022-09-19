@@ -89,7 +89,7 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		if s, ok := r(m.GetPath()); ok {
 			return s
 		} else if s, ok := r(m.GetPathSeparatedPrefix()); ok {
-			return s
+			return path.Join(s, "*")
 		} else if s, ok := r(m.GetPathTemplate()); ok {
 			return s
 		} else if s, ok := r(m.GetPrefix()); ok {
