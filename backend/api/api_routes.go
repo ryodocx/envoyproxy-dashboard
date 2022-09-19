@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path"
 	"strings"
 
 	_listener "github.com/envoyproxy/go-control-plane/envoy/config/listener/v3"
@@ -110,7 +111,7 @@ func (s *server) routes(w http.ResponseWriter, r *http.Request) {
 		switch v := r.Action.(type) {
 		case *_route.Route_Route:
 			if s := r.Decorator.String(); strings.HasPrefix(s, `operation:`) {
-				return "proxy", strings.Trim(strings.TrimPrefix(s, `operation:`), `"`)
+				return "proxy", strings.TrimSuffix(strings.Trim(strings.TrimPrefix(s, `operation:`), `"`), "/*")
 			}
 			return "proxy", v.Route.GetCluster()
 		case *_route.Route_Redirect:
