@@ -8,7 +8,7 @@ RUN go mod download
 COPY . .
 RUN go install -ldflags "-X main.version=$(git describe --tags)"
 
-FROM alpine:3.18.5
+FROM alpine:3.19.0
 ENV ENVOY_DASHBOARD_LISTENADDR=0.0.0.0:8080
 COPY --from=0 /go/bin/envoyproxy-dashboard /usr/local/bin/
 ENTRYPOINT [ "envoyproxy-dashboard" ]
